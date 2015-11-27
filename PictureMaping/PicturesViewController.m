@@ -12,6 +12,7 @@
 #import "UIImageView+CoreData.h"
 #import "VKDataApi.h"
 #import "PhotoData.h"
+#import "Photo.h"
 #import "MapPhotosViewController.h"
 
 static NSString * const APP_ID = @"5149221";
@@ -77,9 +78,12 @@ static NSString * const SEGUE_IMAGEVC_ID = @"segueTranferToImageVC";
         NSMutableArray *indexes = [NSMutableArray array];
         
         for (int i = 0; i < newPhotos.count; i++) {
+            Photo *newPhoto = [Photo MR_createEntity];
+            [newPhoto loadDataFromPhotoData:[newPhotos objectAtIndex:i]];
             [indexes addObject:[NSIndexPath indexPathForItem:i + photosFromWall.count inSection:0]];
         }
         
+        [self saveContext];
         [photosFromWall performSelectorOnMainThread:@selector(addObjectsFromArray:) withObject:newPhotos waitUntilDone:YES];
         [self performSelectorOnMainThread:@selector(setOffsetPhotos:) withObject:[NSNumber numberWithInteger:offset + count] waitUntilDone:YES];
         [self.collectionView performSelectorOnMainThread:@selector(insertItemsAtIndexPaths:) withObject:indexes waitUntilDone:YES];
@@ -98,7 +102,7 @@ static NSString * const SEGUE_IMAGEVC_ID = @"segueTranferToImageVC";
     request.waitUntilDone = YES;
     
     [request executeWithResultBlock:^(VKResponse *response) {
-        NSLog(@"Request executed: %@ %@;", request.methodName, request.methodParameters.description);
+        NSLog(@"Request executed: %@;", request.methodName);
         dict = response.json;
     } errorBlock:^(NSError *error) {
         NSLog(@"Request didn`t execute: %@ (%@);", request.methodName, error.description);
@@ -111,30 +115,39 @@ static NSString * const SEGUE_IMAGEVC_ID = @"segueTranferToImageVC";
     offsetPhotos = offset.intValue;
 }
 
-#pragma - UICollectionView
+- (void)saveContext {
+    [[NSManagedObjectContext MR_contextForCurrentThread] MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+        if (success) {
+            NSLog(@"You successfully saved your context.");
+        } else if (error) {
+            NSLog(@"Error saving context: %@", error.description);
+        }
+        else
+            NSLog(@"It`s not all!");
+    }];
+}
+
+#pragma mark - UICollectionView
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return photosFromWall.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell_UIImage *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CELL_ID forIndexPath:indexPath];
+    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:CELL_ID forIndexPath:indexPath];
     
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row < photosFromWall.count) {
-        UICollectionViewCell_UIImage *cell_image = (UICollectionViewCell_UIImage *)cell;
+        UICollectionViewCell *cell_image = cell;
         
-        if (cell_image.imageView.image == nil) {
-            PhotoData *photoData = [photosFromWall objectAtIndex:indexPath.row];
-            NSURL *url = [NSURL URLWithString:photoData.photo_130];
-            
-            [cell_image setupWithImage:nil];
-            [cell_image.imageView setImageWithURL:url];
-            //[cell_image.imageView sd_setImageWithURL:url];
-        }
+        PhotoData *photoData = [photosFromWall objectAtIndex:indexPath.row];        
+        NSURL *url = [NSURL URLWithString:photoData.photo_130];
+
+        [cell_image setupWithImage:nil];
+        [cell_image.imageView setImageWithURL:url];
     }
 }
 
@@ -147,7 +160,7 @@ static NSString * const SEGUE_IMAGEVC_ID = @"segueTranferToImageVC";
     [self.navigationController pushViewController:imageVC animated:YES];
 }
 
-#pragma - UIScrollViewDelegate
+#pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     float bottomEdge = scrollView.contentOffset.y + 2 * scrollView.frame.size.height;
@@ -161,7 +174,7 @@ static NSString * const SEGUE_IMAGEVC_ID = @"segueTranferToImageVC";
     }
 }
 
-#pragma - VKSdkDelegate
+#pragma mark - VKSdkDelegate
 
 - (void)vkSdkAccessAuthorizationFinishedWithResult:(VKAuthorizationResult *)result {
     
@@ -171,7 +184,7 @@ static NSString * const SEGUE_IMAGEVC_ID = @"segueTranferToImageVC";
     
 }
 
-#pragma - UIRefreshControl
+#pragma mark - UIRefreshControl
 
 - (void)refreshControlAction:(UIRefreshControl *)refreshControl {
     /*NSOperation *loadPhotoData = [[NSInvocationOperation alloc] initWithTarget:self
@@ -182,7 +195,7 @@ static NSString * const SEGUE_IMAGEVC_ID = @"segueTranferToImageVC";
     [refreshControl endRefreshing];
 }
 
-#pragma - UIBarButtonItem
+#pragma mark - UIBarButtonItem
 
 - (void)actionRightBarButton {
     MapPhotosViewController *mapPhotosVC = [self.storyboard instantiateViewControllerWithIdentifier:MAPPHOTOSVC_ID];

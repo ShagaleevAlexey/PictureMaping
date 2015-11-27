@@ -8,12 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UICollectionViewCell_UIImage : UICollectionViewCell
+@interface UICollectionViewCell (ImageView)
 
 @property (strong, nonatomic) UIImageView *imageView;
 
-- (instancetype)init;
-- (instancetype)initWithFrame:(CGRect)frame;
 - (void)setupWithImage:(UIImage *)image;
 
 @end

@@ -7,43 +7,29 @@
 //
 
 #import "UICollectionViewCell+UIImage.h"
+#import <objc/runtime.h>
 
-@implementation UICollectionViewCell_UIImage
+static void * ImageViewPropertyKey = &ImageViewPropertyKey;
 
-- (instancetype)init {
-    if (self = [super init]) {
-        if (!_imageView)
-            _imageView = [[UIImageView alloc] init];
-        
-        [_imageView setContentMode:UIViewContentModeScaleAspectFill];
-        //[_imageView setBackgroundColor:[UIColor redColor]];
-    }
-    
-    return self;
-}
-
-- (instancetype)initWithFrame:(CGRect)frame {
-    if (self = [super initWithFrame:frame]) {
-        if (!_imageView) {
-            _imageView = [[UIImageView alloc] initWithFrame:frame];
-            [self addSubview:_imageView];
-        }
-        
-        [_imageView setContentMode:UIViewContentModeScaleAspectFill];
-        //[_imageView setBackgroundColor:[UIColor redColor]];
-    }
-    
-    return self;
-}
+@implementation UICollectionViewCell (ImageView)
 
 - (void)setupWithImage:(UIImage *)image {
-    if (!_imageView) {
-        _imageView = [[UIImageView alloc] initWithFrame:self.bounds];
-        [self addSubview:_imageView];
+    if (!self.imageView) {
+        self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
+        [self setClipsToBounds:YES];
+        [self addSubview:self.imageView];
     }
     
-    [_imageView setContentMode:UIViewContentModeScaleAspectFill];
-    [_imageView setImage:image];
+    [self.imageView setContentMode:UIViewContentModeScaleAspectFill];
+    [self.imageView setImage:image];
+}
+
+- (UIImageView *)imageView {
+    return objc_getAssociatedObject(self, ImageViewPropertyKey);
+}
+
+- (void)setImageView:(UIImageView *)imageView {
+    objc_setAssociatedObject(self, ImageViewPropertyKey, imageView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end

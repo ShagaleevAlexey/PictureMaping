@@ -12,6 +12,7 @@
 
 - (instancetype)initWithDict:(NSDictionary *)dict {
     if (self = [super init]) {
+        _idPhoto = [[dict objectForKey:@"id"] stringValue];
         _photo_75 = [dict objectForKey:@"photo_75"];
         _photo_130 = [dict objectForKey:@"photo_130"];
         _photo_604 = [dict objectForKey:@"photo_604"];

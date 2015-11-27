@@ -10,6 +10,7 @@
 
 @interface PhotoData : NSObject
 
+@property (strong, nonatomic) NSString *idPhoto;
 @property (strong, nonatomic) NSString *photo_75;
 @property (strong, nonatomic) NSString *photo_130;
 @property (strong, nonatomic) NSString *photo_604;
