@@ -7,19 +7,37 @@
 //
 
 #import "UIImageView+CoreData.h"
+#import "PhotoCache.h"
 
 @implementation UIImageView (CoreData)
 
 - (void)setImageWithURL:(NSURL *)url {
     if (url) {
         __weak __typeof(self) wself = self;
+        __weak __typeof(NSURL *) wurl = url;
         
         NSURLSessionTask *downloadPhotoTask = [[NSURLSession sharedSession] downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
-            NSData *data = [NSData dataWithContentsOfURL:location];
+            PhotoCache *photoCache = [[PhotoCache MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"url contains[c] %@", wurl.absoluteString]] firstObject];
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [wself setImage:[UIImage imageWithData:data]];
-            });
+            if (photoCache != nil) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSLog(@"Get photo.");
+                    [wself setImage:[UIImage imageWithData:photoCache.photo]];
+                });
+            }
+            else {
+                PhotoCache *newPhotoCache = [PhotoCache MR_createEntity];
+                
+                newPhotoCache.url = wurl.absoluteString;
+                newPhotoCache.photo = [NSData dataWithContentsOfURL:location];
+                NSLog(@"Download photo.");
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [wself setImage:[UIImage imageWithData:newPhotoCache.photo]];
+                });
+                
+                [[NSManagedObjectContext MR_contextForCurrentThread] MR_saveToPersistentStoreAndWait];
+            }
         }];
         
         [downloadPhotoTask resume];
@@ -29,21 +47,27 @@
 
 #pragma mark - Core Data
 
-- (void)checkExistPhotoDataByID:(NSString *)idPhoto {
-    /*NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"PhotosModel"];
-    
-    [request setPredicate:[NSPredicate predicateWithFormat:@"id = %@", idPhoto]];
-    [request setFetchLimit:1];
-    
-    NSError *error;
-    NSUInteger count = [_managedObjectContext countForFetchRequest:request error:&error];
-    
-    if (count == NSNotFound) {
-        NSLog(@"Not found");
+- (void)saveContext {
+    /*[[NSManagedObjectContext MR_contextForCurrentThread] MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+        if (success) {
+            NSLog(@"You successfully saved your context.");
+        } else if (error) {
+            NSLog(@"Error saving context: %@", error.description);
+        }
+        else
+            NSLog(@"It`s not all!");
+    }];*/
+}
+
+- (BOOL)checkExistPhotoDataByURL:(NSString *)url {
+    NSArray *array = [PhotoCache MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"url contains[c] %@", url]];
+
+    if (array.count == 0) {
+        return NO;
     }
     else {
-        NSLog(@"Found");
-    }*/
+        return YES;
+    }
 }
 
 - (void)insertImage:(UIImage *)image {

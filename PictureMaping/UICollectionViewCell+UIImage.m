@@ -9,7 +9,7 @@
 #import "UICollectionViewCell+UIImage.h"
 #import <objc/runtime.h>
 
-static void * ImageViewPropertyKey = &ImageViewPropertyKey;
+static void *ImageViewPropertyKey = &ImageViewPropertyKey;
 
 @implementation UICollectionViewCell (ImageView)
 

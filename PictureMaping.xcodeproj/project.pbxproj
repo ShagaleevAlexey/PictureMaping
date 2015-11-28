@@ -18,6 +18,8 @@
 		6D0390D01BF8E4FA0060141F /* PicturesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D0390CF1BF8E4FA0060141F /* PicturesViewController.m */; };
 		6D0390D31BF8EDFF0060141F /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D0390D21BF8EDFF0060141F /* SafariServices.framework */; };
 		6D1921801BFF9DDA00D2DEC4 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 6D19217F1BFF9DDA00D2DEC4 /* Podfile */; };
+		6D41E0BB1C09860000418D47 /* PhotoCache+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D41E0B81C09860000418D47 /* PhotoCache+CoreDataProperties.m */; };
+		6D41E0BC1C09860000418D47 /* PhotoCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D41E0BA1C09860000418D47 /* PhotoCache.m */; };
 		6D475C091BF9ADB4006ABA32 /* VKDataApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D475C081BF9ADB4006ABA32 /* VKDataApi.m */; };
 		6D475C141BF9C602006ABA32 /* PhotoData.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D475C131BF9C602006ABA32 /* PhotoData.m */; };
 		6D4BC6D41BFE555E007B4A4C /* PhotoShowerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D4BC6D31BFE555E007B4A4C /* PhotoShowerViewController.m */; };
@@ -96,6 +98,10 @@
 		6D0390D21BF8EDFF0060141F /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		6D19217F1BFF9DDA00D2DEC4 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		6D255E661C0886CA00856E42 /* PictureMaping-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PictureMaping-Prefix.pch"; sourceTree = "<group>"; };
+		6D41E0B71C09860000418D47 /* PhotoCache+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PhotoCache+CoreDataProperties.h"; sourceTree = "<group>"; };
+		6D41E0B81C09860000418D47 /* PhotoCache+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PhotoCache+CoreDataProperties.m"; sourceTree = "<group>"; };
+		6D41E0B91C09860000418D47 /* PhotoCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoCache.h; sourceTree = "<group>"; };
+		6D41E0BA1C09860000418D47 /* PhotoCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoCache.m; sourceTree = "<group>"; };
 		6D475C071BF9ADB4006ABA32 /* VKDataApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VKDataApi.h; sourceTree = "<group>"; };
 		6D475C081BF9ADB4006ABA32 /* VKDataApi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VKDataApi.m; sourceTree = "<group>"; };
 		6D475C121BF9C602006ABA32 /* PhotoData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoData.h; sourceTree = "<group>"; };
@@ -493,7 +499,6 @@
 			isa = PBXGroup;
 			children = (
 				6D5A349F1C088C7F00CD1AA1 /* MagicalRecord */,
-				6D510AFC1C083D2C00939591 /* UIImageView+CoreData */,
 				6DFE2EFC1C082793008A4557 /* CoreData.framework */,
 				6D4FBFF81C0217D700A79DF6 /* Pods */,
 				6D4FBFF21C02155000A79DF6 /* MapKit.framework */,
@@ -509,6 +514,10 @@
 		6D255E5C1C0883A000856E42 /* Core Data */ = {
 			isa = PBXGroup;
 			children = (
+				6D41E0B71C09860000418D47 /* PhotoCache+CoreDataProperties.h */,
+				6D41E0B81C09860000418D47 /* PhotoCache+CoreDataProperties.m */,
+				6D41E0B91C09860000418D47 /* PhotoCache.h */,
+				6D41E0BA1C09860000418D47 /* PhotoCache.m */,
 				6D5010E81C08BCF100833D42 /* Photo+CoreDataProperties.h */,
 				6D5010E91C08BCF100833D42 /* Photo+CoreDataProperties.m */,
 				6D5010EA1C08BCF100833D42 /* Photo.h */,
@@ -563,6 +572,7 @@
 		6D4BECFE1BFA43A900ABEDFD /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				6D510AFC1C083D2C00939591 /* UIImageView+CoreData */,
 				6D4F49021C031EF900A42CB7 /* MarkerInfoView */,
 				6D4BECF71BFA38D100ABEDFD /* Cell+Image */,
 			);
@@ -942,6 +952,7 @@
 				6D510AFE1C083DFF00939591 /* UIImageView+CoreData.m */,
 			);
 			name = "UIImageView+CoreData";
+			path = ..;
 			sourceTree = "<group>";
 		};
 		6D510B001C0869EB00939591 /* LocalPhotos */ = {
@@ -1258,6 +1269,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D5A34E81C088C7F00CD1AA1 /* NSManagedObjectContext+MagicalRecord.m in Sources */,
+				6D41E0BB1C09860000418D47 /* PhotoCache+CoreDataProperties.m in Sources */,
 				6D4F49071C031F5700A42CB7 /* MarkerInfoView.m in Sources */,
 				6D5F22D91BFF9C3500640C4C /* MapPhotosViewController.m in Sources */,
 				6D5A34F21C088C7F00CD1AA1 /* MagicalRecord+Setup.m in Sources */,
@@ -1292,6 +1304,7 @@
 				6D5A34F01C088C7F00CD1AA1 /* MagicalRecord+iCloud.m in Sources */,
 				6D5A34ED1C088C7F00CD1AA1 /* NSPersistentStoreCoordinator+MagicalRecord.m in Sources */,
 				6D5A34EB1C088C7F00CD1AA1 /* NSManagedObjectModel+MagicalRecord.m in Sources */,
+				6D41E0BC1C09860000418D47 /* PhotoCache.m in Sources */,
 				6D5010EC1C08BCF100833D42 /* Photo+CoreDataProperties.m in Sources */,
 				6D5A34F11C088C7F00CD1AA1 /* MagicalRecord+Options.m in Sources */,
 				6D5A34F41C088C7F00CD1AA1 /* MagicalRecord.m in Sources */,

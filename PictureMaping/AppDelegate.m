@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "PicturesViewController.h"
 #import "Photo.h"
+#import "PhotoCache.h"
 
 @import GoogleMaps;
 
@@ -50,7 +51,21 @@
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:
+    [self saveContext];
+}
+
+#pragma mark - Core Data Stack
+
+- (void)saveContext {
+    [[NSManagedObjectContext MR_defaultContext] MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+        if (success) {
+            NSLog(@"You successfully saved your context.");
+        } else if (error) {
+            NSLog(@"Error saving context: %@", error.description);
+        }
+        else
+            NSLog(@"It`s not all!");
+    }];
 }
 
 @end
