@@ -12,17 +12,27 @@
 @implementation UIImageView (CoreData)
 
 - (void)setImageWithURL:(NSURL *)url {
+    [self setImageWithURL:url Comleted:nil];
+}
+
+- (void)setImageWithURL:(NSURL *)url Comleted:(void (^)(UIImageView *imageView, BOOL finished, UIImage *image))completed {
     if (url) {
         __weak __typeof(self) wself = self;
-        __weak __typeof(NSURL *) wurl = url;
+        __weak __typeof(url) wurl = url;
         
+        NSLog(@"Start block: %@", [[NSThread currentThread] description]);
         NSURLSessionTask *downloadPhotoTask = [[NSURLSession sharedSession] downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
             PhotoCache *photoCache = [[PhotoCache MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"url contains[c] %@", wurl.absoluteString]] firstObject];
             
-            if (photoCache != nil) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSLog(@"Get photo.");
-                    [wself setImage:[UIImage imageWithData:photoCache.photo]];
+            if (photoCache != nil && photoCache.photo != nil) {
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    UIImage *image = [UIImage imageWithData:photoCache.photo];
+                    
+                    [wself setImage:image];
+                    NSLog(@"Get photo: %f %@ ", (float)photoCache.photo.length/1024.0f/1024.0f, photoCache.url);
+                    
+                    if (completed != nil)
+                        completed(self, YES, image);
                 });
             }
             else {
@@ -31,13 +41,19 @@
                 newPhotoCache.url = wurl.absoluteString;
                 newPhotoCache.photo = [NSData dataWithContentsOfURL:location];
                 NSLog(@"Download photo.");
-
+                
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    UIImage *image = [UIImage imageWithData:newPhotoCache.photo];
+                    
                     [wself setImage:[UIImage imageWithData:newPhotoCache.photo]];
+                    
+                    if (completed != nil)
+                        completed(wself, YES, image);
                 });
                 
                 [[NSManagedObjectContext MR_contextForCurrentThread] MR_saveToPersistentStoreAndWait];
             }
+            NSLog(@"End block: %@", [[NSThread currentThread] description]);
         }];
         
         [downloadPhotoTask resume];

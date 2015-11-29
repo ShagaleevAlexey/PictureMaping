@@ -141,13 +141,11 @@ static NSString * const SEGUE_IMAGEVC_ID = @"segueTranferToImageVC";
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row < photosFromWall.count) {
-        UICollectionViewCell *cell_image = cell;
-        
-        PhotoData *photoData = [photosFromWall objectAtIndex:indexPath.row];        
-        NSURL *url = [NSURL URLWithString:photoData.photo_130];
+        PhotoData *photoData = [photosFromWall objectAtIndex:indexPath.row];
+        NSURL *url = [NSURL URLWithString:[photoData optimalImagesByWidth:cell.bounds.size.width]];
 
-        [cell_image setupWithImage:nil];
-        [cell_image.imageView setImageWithURL:url];
+        [cell setupWithImage:nil];
+        [cell.imageView setImageWithURL:url];
     }
 }
 

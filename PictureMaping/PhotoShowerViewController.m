@@ -8,6 +8,7 @@
 
 #import "PhotoShowerViewController.h"
 #import "MapPhotosViewController.h"
+#import "UIImageView+CoreData.h"
 
 static NSString * const MAPPHOTOSVC_ID = @"MapPhotosVC";
 
@@ -33,6 +34,18 @@ static NSString * const MAPPHOTOSVC_ID = @"MapPhotosVC";
         
         [self balanceImageAndZoom];
     }];*/
+    
+    __weak __typeof(self) wself = self;
+    __weak UIImageView *wimageView = _imageView;
+    __weak UIScrollView *wscrollView = _scrollView;
+    
+    [_imageView setImageWithURL:[NSURL URLWithString:_photoData.maximizedPhoto] Comleted:^(UIImageView *imageView, BOOL finished, UIImage *image) {
+        wimageView.frame = CGRectMake(0, 0, image.size.width, image.size.height);
+        wscrollView.contentSize = wimageView.bounds.size;
+        wscrollView.contentOffset = CGPointMake(0, 0);
+        
+        [wself balanceImageAndZoom];
+    }];
     
     
     UITapGestureRecognizer *oneFingerTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scrollViewOneFingerTapped:)];

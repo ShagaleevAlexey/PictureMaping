@@ -28,6 +28,8 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [GMSServices provideAPIKey:@"AIzaSyB2lY4l7ecHS40kTDfitqJr7u16XKk5ovY"];
     [MagicalRecord setupCoreDataStackWithStoreNamed:@"PhotoModels"];
+    //[PhotoCache MR_truncateAll];
+    //[Photo MR_truncateAll];
     
     return YES;
 }

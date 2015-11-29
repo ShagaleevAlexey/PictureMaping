@@ -10,6 +10,7 @@
 #import "PhotoData.h"
 #import "MarkerInfoView.h"
 #import "PhotoShowerViewController.h"
+#import "UIImageView+CoreData.h"
 
 static NSString * const IMAGEVC_ID = @"ImageVC";
 
@@ -76,9 +77,9 @@ static NSString * const IMAGEVC_ID = @"ImageVC";
     MarkerInfoView *infoView = [[[NSBundle mainBundle] loadNibNamed:@"MarkerInfoWindow" owner:self options:nil] objectAtIndex:0];
     PhotoData *data = [_markersCoordinates objectAtIndex:marker.zIndex];
     
-    //[infoView.imageView sd_setImageWithURL:[NSURL URLWithString:[data optimalImagesByWidth:infoView.imageView.bounds.size.width]]];
+    [infoView.imageView setImageWithURL:[NSURL URLWithString:data.photo_130]];
     
-    return infoView;
+    return [infoView copy];
 }
 
 - (void)mapView:(GMSMapView *)mapView didTapInfoWindowOfMarker:(GMSMarker *)marker {

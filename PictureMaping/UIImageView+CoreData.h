@@ -12,5 +12,5 @@
 @interface UIImageView (CoreData)
 
 - (void)setImageWithURL:(NSURL *)url;
-
+- (void)setImageWithURL:(NSURL *)url Comleted:(void (^)(UIImageView *imageView, BOOL finished, UIImage *image))completed;
 @end
